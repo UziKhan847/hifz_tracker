@@ -3,7 +3,20 @@
 import 'package:flutter/material.dart';
 
 class StudentTile extends StatelessWidget {
-  const StudentTile({super.key});
+  final int id;
+  final int age;
+  final String name;
+  final String origin;
+  final bool hafiz;
+
+  const StudentTile({
+    super.key,
+    required this.id,
+    required this.age,
+    required this.name,
+    required this.origin,
+    required this.hafiz,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +38,8 @@ class StudentTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CircleAvatar(
-              child: Text("SK"),
               backgroundColor: const Color.fromARGB(255, 192, 243, 255),
+              child: Text("SK"),
             ),
             Container(
               height: 80,
@@ -49,7 +62,7 @@ class StudentTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Mohammad Sudais Khan',
+                    '$name',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                   ),
                   Divider(
@@ -61,16 +74,16 @@ class StudentTile extends StatelessWidget {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Id: 1'),
-                              Text('Age: 13'),
+                              Text('Id: $id'),
+                              Text('Age: $age'),
                             ]),
                       ),
                       Expanded(
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Origin: Canada'),
-                              Text('Hafiz: No'),
+                              Text('Origin: $origin'),
+                              Text('Hafiz: $hafiz'),
                             ]),
                       ),
                     ],

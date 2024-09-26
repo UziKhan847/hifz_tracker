@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_snackbar.dart';
+import 'package:markaz_umaza_hifz_tracker/components/logout_dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/supbase_client.dart';
 
 class SpeedDialMenu extends StatelessWidget {
@@ -32,6 +32,13 @@ class SpeedDialMenu extends StatelessWidget {
           label: 'Add Student',
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
+          onTap: () async {
+            final user = supabase.auth.currentUser!.id;
+            final data =
+                await supabase.from('students').select().eq("parent_id", user);
+
+            print(data);
+          },
         ),
         SpeedDialChild(
           child: Icon(Icons.logout),
@@ -41,10 +48,17 @@ class SpeedDialMenu extends StatelessWidget {
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
           onTap: () {
-            supabase.auth.signOut();
-            if (context.mounted) {
-              context.showSnackBar('Logout succesful!');
-            }
+            // supabase.auth.signOut();
+            // if (context.mounted) {
+            //   context.showSnackBar('Logout succesful!');
+            // }
+
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) => LogoutDialog(),
+            // );
+
+            dialogueBuilder(context);
           },
         )
       ],
