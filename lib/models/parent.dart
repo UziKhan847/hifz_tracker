@@ -1,5 +1,9 @@
 import 'package:markaz_umaza_hifz_tracker/models/student.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'parent.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Parent {
   Parent({
     required this.students,
@@ -7,13 +11,13 @@ class Parent {
     required this.fullName,
   });
 
-  factory Parent.fromJson(Map<String, dynamic> json) => Parent(
-        students: json['students'].map((student) => Student.fromJson(student)).toList().cast<Student>() ,
-        id: json['id'],
-        fullName: json['full_name'],
-      );
-
   final List<Student> students;
   final String id;
+
+  @JsonKey(name: 'full_name')
   final String? fullName;
+
+  factory Parent.fromJson(Map<String, dynamic> json) => _$ParentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ParentToJson(this);
 }
