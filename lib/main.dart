@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/homepage.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/login_signup_page.dart';
-import 'package:markaz_umaza_hifz_tracker/supbase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supabase = Supabase.instance.client;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,38 +27,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isLoggedIn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      final User? user = data.session?.user;
-
-      switch (user) {
-        case null:
-          setState(() {
-            isLoggedIn = false;
-          });
-        default:
-          setState(() {
-            isLoggedIn = true;
-          });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: isLoggedIn ? Homepage() : LoginSignupPage(),
+      home: StreamBuilder(
+        stream: supabase.auth.onAuthStateChange,
+        builder: (context, snapshot) => snapshot.data?.session?.user != null
+            ? Homepage()
+            : LoginSignupPage(),
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:markaz_umaza_hifz_tracker/components/logout_dialog.dart';
-import 'package:markaz_umaza_hifz_tracker/supbase_client.dart';
+import 'package:markaz_umaza_hifz_tracker/widgets/logout_dialog.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
 
 class SpeedDialMenu extends StatelessWidget {
   final void Function()? onPressed;
@@ -15,9 +15,9 @@ class SpeedDialMenu extends StatelessWidget {
       icon: Icons.menu,
       activeIcon: Icons.close,
       backgroundColor: Color(0xFFE59A2A),
-      foregroundColor: Color(0xFFFFFFFF),
+      foregroundColor: Colors.white,
       activeBackgroundColor: Color(0xFF123a5e),
-      activeForegroundColor: Color(0xFFFFFFFF),
+      activeForegroundColor: Colors.white,
       curve: Curves.fastOutSlowIn,
       overlayColor: Colors.black,
       overlayOpacity: 0.3,

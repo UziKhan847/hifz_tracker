@@ -18,6 +18,20 @@ class StudentTile extends StatelessWidget {
     required this.hafiz,
   });
 
+  Expanded studentInfo(
+    String textOne,
+    textOneData,
+    String textTwo,
+    textTwoData,
+  ) {
+    return Expanded(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('$textOne: $textOneData'),
+        Text('$textTwo: $textTwoData'),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,22 +84,9 @@ class StudentTile extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Expanded(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Id: $id'),
-                              Text('Age: $age'),
-                            ]),
-                      ),
-                      Expanded(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Origin: $origin'),
-                              Text('Hafiz: $hafiz'),
-                            ]),
-                      ),
+                      studentInfo('Id', id, 'Age', age),
+                      studentInfo(
+                          'Origin', origin, 'Hafiz', hafiz ? "Yes" : "No"),
                     ],
                   )
                 ],

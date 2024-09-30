@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_snackbar.dart';
-import 'package:markaz_umaza_hifz_tracker/supbase_client.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
 
 Future<void> dialogueBuilder(BuildContext context) {
   return showDialog<void>(
@@ -20,7 +20,7 @@ Future<void> dialogueBuilder(BuildContext context) {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.popUntil(context, (route) => route.isFirst);
                 supabase.auth.signOut();
                 if (context.mounted) {
                   context.showSnackBar('Logout succesful!');
@@ -56,7 +56,7 @@ Future<void> dialogueBuilderTwo(
                 final fullname = fullnameController!.text;
                 final userId = id;
 
-                await supabase.from('profile').update({
+                await supabase.from('profiles').update({
                   'full_name': fullname,
                 }).eq(
                   'id',

@@ -1,11 +1,26 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_button.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_here_text.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_textfield.dart';
+
+import '../utils/margins.dart';
+import '../widgets/login/login_signup_button.dart';
+import '../widgets/login/login_signup_here_text.dart';
+import '../widgets/login/login_signup_textfield.dart';
 
 class LoginSignupTile extends StatelessWidget {
+  const LoginSignupTile({
+    super.key,
+    this.forgotPW,
+    required this.emailController,
+    required this.passwordController,
+    required this.buttonText,
+    required this.onButtonTap,
+    required this.onTextTap,
+    required this.pageChangeText,
+    required this.memberQuestionText,
+    required this.isLoading,
+  });
+
   final Widget? forgotPW;
   final bool isLoading;
   final String buttonText;
@@ -15,18 +30,6 @@ class LoginSignupTile extends StatelessWidget {
   final Function()? onTextTap;
   final TextEditingController emailController;
   final TextEditingController passwordController;
-
-  const LoginSignupTile(
-      {super.key,
-      this.forgotPW,
-      required this.emailController,
-      required this.passwordController,
-      required this.buttonText,
-      required this.onButtonTap,
-      required this.onTextTap,
-      required this.pageChangeText,
-      required this.memberQuestionText,
-      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +77,7 @@ class LoginSignupTile extends StatelessWidget {
             ],
           ),
 
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           LoginSignupButton(
             buttonText: buttonText,
             onTap: onButtonTap,
@@ -84,18 +85,20 @@ class LoginSignupTile extends StatelessWidget {
           ),
 
           //forgot password text
-          SizedBox(
-            height: 15,
-          ),
-          SizedBox(child: forgotPW),
+          SizedBox(height: 15),
+          if (forgotPW != null) forgotPW!,
 
-          SizedBox(
-            height: 10,
+          Margins.vertical10,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(memberQuestionText),
+              LoginSignupHereText(
+                text: pageChangeText,
+                onTap: onTextTap,
+              ),
+            ],
           ),
-          LoginSignupHereText(
-              pageChangeText: pageChangeText,
-              memberQuestionText: memberQuestionText,
-              onTap: onTextTap),
         ],
       ),
     );

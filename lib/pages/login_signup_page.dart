@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:markaz_umaza_hifz_tracker/components/login_signup_snackbar.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/models/login_signup_tile.dart';
-import 'package:markaz_umaza_hifz_tracker/supbase_client.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginSignupPage extends StatefulWidget {
@@ -78,7 +79,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         password: _passwordController.text,
       );
       if (mounted) {
-        context.showSnackBar("Success! Please confrim your account.");
+        context.showSnackBar("Success! Please confirm your account.");
         _emailController.clear();
         _passwordController.clear();
       }
@@ -104,11 +105,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -119,7 +115,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(253, 253, 253, 1),
@@ -128,7 +124,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("lib/images/school_supplies_background.png"),
+              image: AssetImage("images/school_supplies_background.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -145,7 +141,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
                   //Logo
                   Image.asset(
-                    "lib/images/markaz_umaza_logo.png",
+                    "images/markaz_umaza_logo.png",
                     height: 100,
                   ),
                   SizedBox(
@@ -233,7 +229,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                     height: 25,
                   ),
                   Image.asset(
-                    "lib/images/mushaf_filled.png",
+                    "images/mushaf_filled.png",
                     height: 70,
                   ),
                 ],
