@@ -6,31 +6,43 @@ import 'package:markaz_umaza_hifz_tracker/models/user_data.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/home_app_bar.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/logout_dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/speed_dial_menu.dart';
-import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/models/student_tile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/student.dart';
 
-class Homepage extends ConsumerWidget {
-  Homepage({super.key});
+class Homepage extends ConsumerStatefulWidget {
+  const Homepage({super.key});
 
+  @override
+  ConsumerState<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends ConsumerState<Homepage> {
   // late Future<PostgrestList> data;
-
-  // final userId = supabase.auth.currentUser!.id;
-
   final parentNameController = TextEditingController();
   final idController = TextEditingController();
   final fullNameController = TextEditingController();
   final ageController = TextEditingController();
   final originController = TextEditingController();
   final hafizController = TextEditingController();
+  late final userId = ref.watch(userData).userId;
+  late final data = ref.watch(userData).getData();
+  List<Student> studentList = [];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userId = ref.watch(userData).userId;
-    final data = ref.watch(userData).getData();
+  void dispose() {
+    parentNameController.dispose();
+    idController.dispose();
+    fullNameController.dispose();
+    ageController.dispose();
+    originController.dispose();
+    hafizController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       appBar: HomeAppBar(),
@@ -51,7 +63,10 @@ class Homepage extends ConsumerWidget {
               } else if (snapshot.hasData) {
                 Parent parentData = Parent.fromJson(snapshot.data![0]);
 
-                List<Student> studentList = parentData.students;
+                if (ref.watch(userData).studentList.isEmpty) {
+                  ref.read(userData).studentList = parentData.students;
+                }
+                studentList = ref.watch(userData).studentList;
 
                 SchedulerBinding.instance.addPostFrameCallback((_) {
                   if (parentData.fullName == null) {
@@ -94,6 +109,7 @@ class Homepage extends ConsumerWidget {
           //final hafiz = hafizController.text;
 
           ref.read(userData).addStudent(id, fullName, age, origin);
+          studentList = ref.watch(userData).studentList;
 
           if (context.mounted) {
             Navigator.pop(context, 'Add');
