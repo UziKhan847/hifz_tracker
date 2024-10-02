@@ -35,7 +35,7 @@ Future<void> dialogueBuilder(BuildContext context) {
 
 Future<void> dialogueBuilderTwo(
   BuildContext context,
-  TextEditingController? fullnameController,
+  TextEditingController fullNameController,
   String id,
 ) {
   return showDialog<void>(
@@ -48,16 +48,16 @@ Future<void> dialogueBuilderTwo(
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
           ),
           content: TextField(
-            controller: fullnameController,
+            controller: fullNameController,
           ),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                final fullname = fullnameController!.text;
+                final fullName = fullNameController.text;
                 final userId = id;
 
                 await supabase.from('profiles').update({
-                  'full_name': fullname,
+                  'full_name': fullName,
                 }).eq(
                   'id',
                   userId,
@@ -67,7 +67,59 @@ Future<void> dialogueBuilderTwo(
                   Navigator.pop(context, 'Cancel');
                 }
               },
-              child: const Text('Cancel'),
+              child: const Text('Update'),
+            ),
+          ],
+        );
+      });
+}
+
+Future<void> dialogueBuilderThree(
+  BuildContext context,
+  void Function()? onPressed,
+  TextEditingController idController,
+  TextEditingController fullNameController,
+  TextEditingController ageController,
+  TextEditingController originController,
+  TextEditingController hafizController,
+) {
+  return showDialog<void>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Please Enter Full Name',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+          content: Column(
+            children: [
+              TextField(
+                controller: idController,
+                decoration: InputDecoration(labelText: 'Id Number'),
+              ),
+              TextField(
+                controller: fullNameController,
+                decoration: InputDecoration(labelText: 'Full Name'),
+              ),
+              TextField(
+                controller: ageController,
+                decoration: InputDecoration(labelText: 'Age'),
+              ),
+              TextField(
+                controller: originController,
+                decoration: InputDecoration(labelText: 'Origin'),
+              ),
+              TextField(
+                controller: hafizController,
+                decoration: InputDecoration(labelText: 'Is he Hafiz?'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: onPressed,
+              child: const Text('Add'),
             ),
           ],
         );

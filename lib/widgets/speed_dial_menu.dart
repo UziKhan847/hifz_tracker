@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/logout_dialog.dart';
-import 'package:markaz_umaza_hifz_tracker/main.dart';
 
 class SpeedDialMenu extends StatelessWidget {
-  final void Function()? onPressed;
+  const SpeedDialMenu({
+    super.key,
+    required this.onPressed,
+    required this.idController,
+    required this.fullNameController,
+    required this.ageController,
+    required this.hafizController,
+    required this.originController,
+  });
 
-  const SpeedDialMenu({super.key, required this.onPressed});
+  final void Function()? onPressed;
+  final TextEditingController idController;
+  final TextEditingController fullNameController;
+  final TextEditingController ageController;
+  final TextEditingController originController;
+  final TextEditingController hafizController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +45,15 @@ class SpeedDialMenu extends StatelessWidget {
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
           onTap: () async {
-            final user = supabase.auth.currentUser!.id;
-            final data =
-                await supabase.from('students').select().eq("parent_id", user);
-
-            print(data);
+            dialogueBuilderThree(
+              context,
+              onPressed,
+              idController,
+              fullNameController,
+              ageController,
+              originController,
+              hafizController,
+            );
           },
         ),
         SpeedDialChild(

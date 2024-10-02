@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Margins {
   static const vertical2 = SizedBox(height: 2);
+  static const vertical3 = SizedBox(height: 3);
   static const vertical4 = SizedBox(height: 4);
   static const vertical5 = SizedBox(height: 5);
   static const vertical6 = SizedBox(height: 6);
@@ -12,6 +13,7 @@ class Margins {
   static const vertical11 = SizedBox(height: 11);
   static const vertical12 = SizedBox(height: 12);
   static const vertical14 = SizedBox(height: 14);
+  static const vertical15 = SizedBox(height: 15);
   static const vertical16 = SizedBox(height: 16);
   static const vertical17 = SizedBox(height: 17);
   static const vertical18 = SizedBox(height: 18);

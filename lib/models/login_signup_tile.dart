@@ -47,9 +47,9 @@ class LoginSignupTile extends StatelessWidget {
                 'Email:',
                 style: bold,
               ),
-              SizedBox(
-                height: 3,
-              ),
+
+              Margins.vertical3,
+
               LoginSignupTextfield(
                 isObscure: false,
                 controller: emailController,
@@ -57,18 +57,16 @@ class LoginSignupTile extends StatelessWidget {
                 keyboardType: TextInputType.emailAddress,
               ),
 
-              SizedBox(
-                height: 12,
-              ),
+              Margins.vertical12,
 
               //Password
               Text(
                 'Password:',
                 style: bold,
               ),
-              SizedBox(
-                height: 3,
-              ),
+
+              Margins.vertical3,
+
               LoginSignupTextfield(
                 isObscure: true,
                 controller: passwordController,
@@ -77,18 +75,21 @@ class LoginSignupTile extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 20),
+          Margins.vertical20,
+
           LoginSignupButton(
             buttonText: buttonText,
             onTap: onButtonTap,
             isLoading: isLoading,
           ),
 
+          Margins.vertical15,
+
           //forgot password text
-          SizedBox(height: 15),
           if (forgotPW != null) forgotPW!,
 
           Margins.vertical10,
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
