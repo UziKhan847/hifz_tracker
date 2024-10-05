@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/homepage.dart';
+import 'package:markaz_umaza_hifz_tracker/pages/homework_page.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/login_signup_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,9 @@ class _MyAppState extends State<MyApp> {
             ? Homepage()
             : LoginSignupPage(),
       ),
+      routes: {
+        '/homework': (context) => HomeworkPage(),
+      },
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key});
+  const HomeAppBar({super.key, required this.title});
+
+  final String title;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -16,7 +18,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       automaticallyImplyLeading: false,
       title: Text(
-        'Student List',
+        title,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
       ),
     );

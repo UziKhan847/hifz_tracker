@@ -8,7 +8,7 @@ import 'package:markaz_umaza_hifz_tracker/models/login_signup_tile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginSignupPage extends StatefulWidget {
-  LoginSignupPage({super.key});
+  const LoginSignupPage({super.key});
 
   @override
   State<LoginSignupPage> createState() => _LoginSignupPageState();

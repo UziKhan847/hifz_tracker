@@ -1,4 +1,4 @@
-import 'package:markaz_umaza_hifz_tracker/models/student.dart';
+import 'package:markaz_umaza_hifz_tracker/models/student/student.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'parent.g.dart';
