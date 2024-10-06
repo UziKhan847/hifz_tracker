@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework_data.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework_tile.dart';
@@ -17,6 +19,36 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
   late HomeworkData homework;
   late final data = homework.getData();
 
+  Future<void> updateCompleted(int number) async {
+    try {
+      await supabase.from('homework').update({
+        'completed': true,
+      }).eq(
+        'homework_number',
+        number,
+      );
+
+      setState(() {
+        homework.homeworkList[number].completed = true;
+      });
+
+      if (mounted) {
+        context.showSnackBar("Marked as Completed!");
+      }
+
+      if (mounted) {
+        Navigator.pop(context, 'Cancel');
+      }
+    } catch (error) {
+      if (mounted) {
+        context.showSnackBar(
+          'Failed! Unexpected error occurred',
+          isError: true,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     homework = ref.watch(homeworkData);
@@ -24,7 +56,8 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       appBar: HomeAppBar(
-        title: 'Hoemework',
+        automaticallyImplyLeading: true,
+        title: "Homework",
       ),
       body: Container(
           height: double.infinity,
@@ -57,10 +90,20 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
                         ? HomeworkTile(
                             homework: _homework,
                             bottomPadding: 0,
+                            onPressed: () async {
+                              updateCompleted(index);
+                              print('IS IT COMPLETE????????????????');
+                              print(homework.homeworkList[index].completed);
+                            },
+                            isSelected: homework.homeworkList[index].completed,
                           )
                         : HomeworkTile(
                             homework: _homework,
                             bottomPadding: 94,
+                            onPressed: () async {
+                              updateCompleted(index);
+                            },
+                            isSelected: homework.homeworkList[index].completed,
                           );
                   },
                 );
@@ -71,7 +114,6 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
               );
             },
           )),
-      floatingActionButton: FloatingActionButton(onPressed: null),
     );
   }
 }

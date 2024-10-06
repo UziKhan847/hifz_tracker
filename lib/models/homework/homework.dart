@@ -30,7 +30,7 @@ class Homework {
   @JsonKey(name: 'student_id')
   final int studentId;
 
-  final bool completed;
+  bool completed;
 
   factory Homework.fromJson(Map<String, dynamic> json) =>
       _$HomeworkFromJson(json);

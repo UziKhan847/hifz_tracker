@@ -39,6 +39,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   flutter_riverpod: ^2.5.1
   json_annotation: ^4.9.0
+  intl_phone_field: ^3.2.0
 
 dev_dependencies:
   flutter_test:

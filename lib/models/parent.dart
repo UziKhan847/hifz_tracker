@@ -9,6 +9,7 @@ class Parent {
     required this.students,
     required this.id,
     required this.fullName,
+    required this.phoneNumber
   });
 
   final List<Student> students;
@@ -16,6 +17,9 @@ class Parent {
 
   @JsonKey(name: 'full_name')
   final String? fullName;
+
+  @JsonKey(name: 'phone_number')
+  final String? phoneNumber;
 
   factory Parent.fromJson(Map<String, dynamic> json) => _$ParentFromJson(json);
 

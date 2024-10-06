@@ -14,11 +14,6 @@ class HomeworkData extends ChangeNotifier {
   List<Homework> homeworkList = [];
   int? studentId;
 
-  void setStudentId(int id) {
-    studentId = id;
-    notifyListeners();
-  }
-
   Future<PostgrestList> getData() async =>
-      supabase.from('homework').select().order('date', ascending: true);
+      supabase.from('homework').select().order('date', ascending: false);
 }

@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework.dart';
 import 'package:markaz_umaza_hifz_tracker/utils/margins.dart';
+import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/labeled_checkbox.dart';
 
 class HomeworkTile extends StatefulWidget {
   const HomeworkTile(
-      {super.key, required this.homework, required this.bottomPadding});
+      {super.key,
+      required this.homework,
+      required this.bottomPadding,
+      required this.onPressed,
+      required this.isSelected});
 
   final Homework homework;
   final double bottomPadding;
+  final void Function()? onPressed;
+  final bool isSelected;
 
   @override
   State<HomeworkTile> createState() => _HomeworkTileState();
 }
 
 class _HomeworkTileState extends State<HomeworkTile> {
-  bool _isSelected = false;
+  // bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,19 +85,46 @@ class _HomeworkTileState extends State<HomeworkTile> {
                 SizedBox(
                   width: 120,
                   child: LabeledCheckbox(
-                      label: _isSelected
-                          ? Text('Completed',
-                              style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                              ))
-                          : Text('Completed'),
-                      padding: EdgeInsets.symmetric(horizontal: 0),
-                      value: _isSelected,
-                      onChanged: (bool newValue) {
-                        setState(() {
-                          _isSelected = newValue;
-                        });
-                      }),
+                    label: widget.isSelected
+                        ? Text('Completed',
+                            style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                            ))
+                        : Text('Completed'),
+                    padding: EdgeInsets.symmetric(horizontal: 0),
+                    value: widget.isSelected,
+                    onChanged: (bool newValue) {
+                      // setState(() {
+                      //   _isSelected = newValue;
+                      // });
+
+                      if (widget.isSelected == false) {
+                        DialogMenu(
+                          title: 'Do you want to mark as completed?',
+                          content: Text('Warning, this cannot be undone!'),
+                          actions: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: widget.onPressed,
+                                  child: const Text('Yes'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (context.mounted) {
+                                      Navigator.pop(context, 'Cancel');
+                                    }
+                                  },
+                                  child: const Text('No'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ).dialogueBuilder(context);
+                      }
+                    },
+                  ),
                 )
               ],
             )

@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:markaz_umaza_hifz_tracker/widgets/logout_dialog.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
+import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 
 class SpeedDialMenu extends StatelessWidget {
   const SpeedDialMenu({
     super.key,
     required this.onPressed,
-    required this.idController,
-    required this.fullNameController,
-    required this.ageController,
-    required this.hafizController,
-    required this.originController,
   });
 
   final void Function()? onPressed;
-  final TextEditingController idController;
-  final TextEditingController fullNameController;
-  final TextEditingController ageController;
-  final TextEditingController originController;
-  final TextEditingController hafizController;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +33,10 @@ class SpeedDialMenu extends StatelessWidget {
           child: Icon(Icons.accessibility),
           backgroundColor: Color(0xFFE59A2A),
           foregroundColor: Colors.white,
-          label: 'Add Student',
+          label: 'Update Details',
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
-          onTap: () async {
-            dialogueBuilderThree(
-              context,
-              onPressed,
-              idController,
-              fullNameController,
-              ageController,
-              originController,
-              hafizController,
-            );
-          },
+          onTap: onPressed,
         ),
         SpeedDialChild(
           child: Icon(Icons.logout),
@@ -64,17 +46,31 @@ class SpeedDialMenu extends StatelessWidget {
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
           onTap: () {
-            // supabase.auth.signOut();
-            // if (context.mounted) {
-            //   context.showSnackBar('Logout succesful!');
-            // }
-
-            // showDialog(
-            //   context: context,
-            //   builder: (BuildContext context) => LogoutDialog(),
-            // );
-
-            dialogueBuilder(context);
+            DialogMenu(
+              title: 'Logout',
+              content: const Text('Are you sure you want to logout?'),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        supabase.auth.signOut();
+                        if (context.mounted) {
+                          context.showSnackBar('Logout succesful!');
+                        }
+                      },
+                      child: const Text('Logout'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ).dialogueBuilder(context);
           },
         )
       ],

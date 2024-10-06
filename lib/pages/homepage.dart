@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
+import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework_data.dart';
 import 'package:markaz_umaza_hifz_tracker/models/parent.dart';
 import 'package:markaz_umaza_hifz_tracker/models/user_data.dart';
+import 'package:markaz_umaza_hifz_tracker/utils/margins.dart';
+import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/home_app_bar.dart';
-import 'package:markaz_umaza_hifz_tracker/widgets/logout_dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/speed_dial_menu.dart';
 import 'package:markaz_umaza_hifz_tracker/models/student/student_tile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,25 +26,93 @@ class Homepage extends ConsumerStatefulWidget {
 class _HomepageState extends ConsumerState<Homepage> {
   // late Future<PostgrestList> data;
   final parentNameController = TextEditingController();
-  final idController = TextEditingController();
-  final fullNameController = TextEditingController();
-  final ageController = TextEditingController();
-  final originController = TextEditingController();
-  final hafizController = TextEditingController();
+  final phoneNumberController = TextEditingController();
   late UserData user;
   late HomeworkData homework;
   late final userId = user.userId;
   late final data = user.getData();
+  bool _isLoading = false;
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     parentNameController.dispose();
-    idController.dispose();
-    fullNameController.dispose();
-    ageController.dispose();
-    originController.dispose();
-    hafizController.dispose();
+    phoneNumberController.dispose();
     super.dispose();
+  }
+
+  void loadCircle() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
+  String? get errorText {
+    final text = parentNameController.value.text;
+    if (text.isEmpty) {
+      return "Can't be empty";
+    }
+    return null;
+  }
+
+  Future<void> updateDetails() async {
+    try {
+      await supabase.from('profiles').update({
+        'full_name': parentNameController.text,
+        'phone_number': phoneNumberController.text
+      }).eq(
+        'id',
+        userId,
+      );
+
+      if (mounted) {
+        context.showSnackBar("Details Updated!");
+      }
+
+      if (mounted) {
+        Navigator.pop(context, 'Cancel');
+      }
+    } catch (error) {
+      if (mounted) {
+        context.showSnackBar(
+          'Unexpected error occurred',
+          isError: true,
+        );
+      }
+    }
+  }
+
+  SizedBox updateDialogContent() {
+    return SizedBox(
+      height: 170,
+      child: Form(
+        key: formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextFormField(
+              controller: parentNameController,
+              decoration: InputDecoration(
+                labelText: "Full Name",
+              ),
+              validator: (name) => name!.isEmpty ? "Name can't be empty" : null,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            ),
+            Margins.vertical10,
+            IntlPhoneField(
+              controller: phoneNumberController,
+              decoration: InputDecoration(labelText: 'Phone Number'),
+              initialCountryCode: 'CA',
+              onChanged: (phone) {},
+              validator: (phone) =>
+                  phone!.number.isEmpty ? "Phone Number can't be empty" : null,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -51,6 +123,7 @@ class _HomepageState extends ConsumerState<Homepage> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       appBar: HomeAppBar(
+        automaticallyImplyLeading: false,
         title: 'Students',
       ),
       body: Container(
@@ -75,8 +148,25 @@ class _HomepageState extends ConsumerState<Homepage> {
                 }
 
                 SchedulerBinding.instance.addPostFrameCallback((_) {
-                  if (parentData.fullName == null) {
-                    dialogueBuilderTwo(context, parentNameController, userId);
+                  if (parentData.fullName == null ||
+                      parentData.phoneNumber == null) {
+                    DialogMenu(
+                      barrierDismissible: false,
+                      title: 'Please Enter Your Details',
+                      content: updateDialogContent(),
+                      actions: <Widget>[
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                updateDetails();
+                              }
+                            },
+                            child: const Text('Update'),
+                          ),
+                        ),
+                      ],
+                    ).dialogueBuilder(context);
                   }
                 });
 
@@ -90,7 +180,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                             student: studentData,
                             bottomPadding: 0,
                             onTap: () {
-                              homework.setStudentId(studentData.id);
+                              homework.studentId = studentData.id;
                               Navigator.pushNamed(context, '/homework');
                             },
                           )
@@ -98,7 +188,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                             student: studentData,
                             bottomPadding: 94,
                             onTap: () {
-                              homework.setStudentId(studentData.id);
+                              homework.studentId = studentData.id;
                               Navigator.pushNamed(context, '/homework');
                             },
                           );
@@ -112,28 +202,35 @@ class _HomepageState extends ConsumerState<Homepage> {
             }),
       ),
       floatingActionButton: SpeedDialMenu(
-        idController: idController,
-        fullNameController: fullNameController,
-        ageController: ageController,
-        originController: originController,
-        hafizController: hafizController,
         onPressed: () async {
-          final id = int.parse(idController.text);
-          final fullName = fullNameController.text;
-          final age = int.parse(ageController.text);
-          final origin = originController.text;
-          //final hafiz = hafizController.text;
-
-          user.addStudent(id, fullName, age, origin);
-
-          if (context.mounted) {
-            Navigator.pop(context, 'Add');
-          }
-
-          idController.clear();
-          fullNameController.clear();
-          ageController.clear();
-          originController.clear();
+          DialogMenu(
+            barrierDismissible: true,
+            title: 'Please Enter Your Details',
+            content: updateDialogContent(),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        updateDetails();
+                      }
+                    },
+                    child: const Text('Update'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (context.mounted) {
+                        Navigator.pop(context, 'Cancel');
+                      }
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              ),
+            ],
+          ).dialogueBuilder(context);
         },
       ),
     );
