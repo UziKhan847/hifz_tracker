@@ -78,24 +78,30 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
                     snapshot.data!.map(Homework.fromJson).toList();
 
                 if (homework.homeworkList.isEmpty) {
-                  homework.homeworkList = homeworkData
-                      .where((x) => x.studentId == homework.studentId)
-                      .toList();
+                  homework.homeworkList = homeworkData;
                 }
 
+                final studentHomeworkList = homework.homeworkList
+                    .where((x) => x.studentId == homework.studentId)
+                    .toList();
+
                 return ListView.builder(
-                  itemCount: homework.homeworkList.length,
+                  itemCount: studentHomeworkList.length,
                   itemBuilder: (context, index) {
-                    Homework studentHomework = homework.homeworkList[index];
+                    Homework studentHomework = studentHomeworkList[index];
+
+                    int indexOfStudentId = homework.homeworkList
+                        .indexWhere((e) => e.id == studentHomework.id);
 
                     return HomeworkTile(
                       homework: studentHomework,
                       bottomPadding:
-                          index < homework.homeworkList.length ? 0 : 94,
+                          index < studentHomeworkList.length ? 0 : 94,
                       onPressed: () async {
-                        await markComplete(studentHomework.id, index);
+                        await markComplete(
+                            studentHomework.id, indexOfStudentId);
                       },
-                      isSelected: homework.homeworkList[index].isCompleted,
+                      isSelected: studentHomeworkList[index].isCompleted,
                     );
                   },
                 );

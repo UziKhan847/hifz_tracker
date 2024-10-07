@@ -36,11 +36,23 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
-        stream: supabase.auth.onAuthStateChange,
-        builder: (context, snapshot) => snapshot.data?.session?.user != null
-            ? Homepage()
-            : LoginSignupPage(),
-      ),
+          stream: supabase.auth.onAuthStateChange,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                  child: Text('Oops! Something went wrong, please try again'));
+            }
+
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.data?.session == null) {
+              return LoginSignupPage();
+            }
+
+            return Homepage();
+          }),
       routes: {
         '/homework': (context) => HomeworkPage(),
       },
