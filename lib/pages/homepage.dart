@@ -102,11 +102,15 @@ class _HomepageState extends ConsumerState<Homepage> {
             Margins.vertical10,
             IntlPhoneField(
               controller: phoneNumberController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
+              decoration: InputDecoration(
+                labelText:
+                    'Phone Number', // https://pub.dev/packages/country_code_picker
+              ),
               initialCountryCode: 'CA',
               onChanged: (phone) {},
-              validator: (phone) =>
-                  phone!.number.isEmpty ? "Phone Number can't be empty" : null,
+              validator: (phone) => phone?.number.isEmpty == true
+                  ? "Phone Number can't be empty"
+                  : null,
               autovalidateMode: AutovalidateMode.onUserInteraction,
             )
           ],
@@ -175,23 +179,14 @@ class _HomepageState extends ConsumerState<Homepage> {
                   itemBuilder: (context, index) {
                     Student studentData = user.students[index];
 
-                    return index < user.students.length - 1
-                        ? StudentTile(
-                            student: studentData,
-                            bottomPadding: 0,
-                            onTap: () {
-                              homework.studentId = studentData.id;
-                              Navigator.pushNamed(context, '/homework');
-                            },
-                          )
-                        : StudentTile(
-                            student: studentData,
-                            bottomPadding: 94,
-                            onTap: () {
-                              homework.studentId = studentData.id;
-                              Navigator.pushNamed(context, '/homework');
-                            },
-                          );
+                    return StudentTile(
+                      student: studentData,
+                      bottomPadding: index < user.students.length - 1 ? 0 : 94,
+                      onTap: () {
+                        homework.studentId = studentData.id;
+                        Navigator.pushNamed(context, '/homework');
+                      },
+                    );
                   },
                 );
               }

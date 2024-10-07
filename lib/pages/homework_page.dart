@@ -19,18 +19,21 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
   late HomeworkData homework;
   late final data = homework.getData();
 
-  Future<void> updateCompleted(int number) async {
+  Future<void> markComplete(int id, int index) async {
     try {
       await supabase.from('homework').update({
-        'completed': true,
+        'is_completed': true,
       }).eq(
-        'homework_number',
-        number,
+        'id',
+        id,
       );
 
       setState(() {
-        homework.homeworkList[number].completed = true;
+        homework.homeworkList[index].isCompleted = true;
       });
+
+      print('DOES THE ID BOOL CHANGE HERE?');
+      print(homework.homeworkList[index].isCompleted);
 
       if (mounted) {
         context.showSnackBar("Marked as Completed!");
@@ -42,7 +45,7 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
     } catch (error) {
       if (mounted) {
         context.showSnackBar(
-          'Failed! Unexpected error occurred',
+          "$error",
           isError: true,
         );
       }
@@ -77,34 +80,26 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
                 final homeworkData =
                     snapshot.data!.map(Homework.fromJson).toList();
 
-                homework.homeworkList = homeworkData
-                    .where((x) => x.studentId == homework.studentId)
-                    .toList();
+                if (homework.homeworkList.isEmpty) {
+                  homework.homeworkList = homeworkData
+                      .where((x) => x.studentId == homework.studentId)
+                      .toList();
+                }
 
                 return ListView.builder(
                   itemCount: homework.homeworkList.length,
                   itemBuilder: (context, index) {
                     Homework _homework = homework.homeworkList[index];
 
-                    return index < homework.homeworkList.length
-                        ? HomeworkTile(
-                            homework: _homework,
-                            bottomPadding: 0,
-                            onPressed: () async {
-                              updateCompleted(index);
-                              print('IS IT COMPLETE????????????????');
-                              print(homework.homeworkList[index].completed);
-                            },
-                            isSelected: homework.homeworkList[index].completed,
-                          )
-                        : HomeworkTile(
-                            homework: _homework,
-                            bottomPadding: 94,
-                            onPressed: () async {
-                              updateCompleted(index);
-                            },
-                            isSelected: homework.homeworkList[index].completed,
-                          );
+                    return HomeworkTile(
+                      homework: _homework,
+                      bottomPadding:
+                          index < homework.homeworkList.length ? 0 : 94,
+                      onPressed: () async {
+                        await markComplete(_homework.id, index);
+                      },
+                      isSelected: homework.homeworkList[index].isCompleted,
+                    );
                   },
                 );
               }

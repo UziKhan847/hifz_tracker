@@ -4,19 +4,23 @@ part 'homework.g.dart';
 
 @JsonSerializable()
 class Homework {
-  Homework(
-      {required this.date,
-      required this.sabaq,
-      required this.performance,
-      required this.hwNumber,
-      required this.pageNumber,
-      required this.juzuNumber,
-      required this.studentId,
-      required this.completed});
+  Homework({
+    required this.date,
+    required this.sabaq,
+    required this.performance,
+    required this.hwNumber,
+    required this.pageNumber,
+    required this.juzuNumber,
+    required this.studentId,
+    required this.isCompleted,
+    required this.id,
+  });
 
   final String date;
   final String sabaq;
   final String? performance;
+
+  final int id;
 
   @JsonKey(name: 'homework_number')
   final int hwNumber;
@@ -30,7 +34,8 @@ class Homework {
   @JsonKey(name: 'student_id')
   final int studentId;
 
-  bool completed;
+@JsonKey(name: 'is_completed')
+  bool isCompleted;
 
   factory Homework.fromJson(Map<String, dynamic> json) =>
       _$HomeworkFromJson(json);

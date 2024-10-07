@@ -22,7 +22,7 @@ class HomeworkTile extends StatefulWidget {
 }
 
 class _HomeworkTileState extends State<HomeworkTile> {
-  // bool isSelected = false;
+  bool _isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +94,6 @@ class _HomeworkTileState extends State<HomeworkTile> {
                     padding: EdgeInsets.symmetric(horizontal: 0),
                     value: widget.isSelected,
                     onChanged: (bool newValue) {
-                      // setState(() {
-                      //   _isSelected = newValue;
-                      // });
-
                       if (widget.isSelected == false) {
                         DialogMenu(
                           title: 'Do you want to mark as completed?',
