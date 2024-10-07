@@ -32,9 +32,6 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
         homework.homeworkList[index].isCompleted = true;
       });
 
-      print('DOES THE ID BOOL CHANGE HERE?');
-      print(homework.homeworkList[index].isCompleted);
-
       if (mounted) {
         context.showSnackBar("Marked as Completed!");
       }
@@ -89,14 +86,14 @@ class _HomeworkPageState extends ConsumerState<HomeworkPage> {
                 return ListView.builder(
                   itemCount: homework.homeworkList.length,
                   itemBuilder: (context, index) {
-                    Homework _homework = homework.homeworkList[index];
+                    Homework studentHomework = homework.homeworkList[index];
 
                     return HomeworkTile(
-                      homework: _homework,
+                      homework: studentHomework,
                       bottomPadding:
                           index < homework.homeworkList.length ? 0 : 94,
                       onPressed: () async {
-                        await markComplete(_homework.id, index);
+                        await markComplete(studentHomework.id, index);
                       },
                       isSelected: homework.homeworkList[index].isCompleted,
                     );

@@ -22,7 +22,6 @@ class HomeworkTile extends StatefulWidget {
 }
 
 class _HomeworkTileState extends State<HomeworkTile> {
-  bool _isSelected = false;
 
   @override
   Widget build(BuildContext context) {
