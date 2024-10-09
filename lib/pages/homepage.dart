@@ -190,6 +190,10 @@ class _HomepageState extends ConsumerState<Homepage> {
                   user.students = parentData.students;
                 }
 
+                phoneNumber ??= parentData.phoneNumber;
+                isoCode ??= parentData.isoCode;
+                dialCode ??= parentData.dialCode;
+
                 if (parentNameController.text == '') {
                   parentNameController.text = parentData.fullName ?? '';
                 }
@@ -275,17 +279,10 @@ class _HomepageState extends ConsumerState<Homepage> {
             ],
           ).dialogueBuilder(context);
         },
-        onPressedLogout: () {
+        onPressedLogout: () async {
           Navigator.popUntil(context, (route) => route.isFirst);
-          supabase.auth.signOut();
-          parentData = Parent(
-              students: [],
-              id: '',
-              fullName: null,
-              phoneNumber: null,
-              isoCode: null,
-              dialCode: null);
           user.students = [];
+          supabase.auth.signOut();
           if (context.mounted) {
             context.showSnackBar('Logout succesful!');
           }
