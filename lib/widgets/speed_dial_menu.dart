@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
-import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 
 class SpeedDialMenu extends StatelessWidget {
   const SpeedDialMenu({
     super.key,
-    required this.onPressed,
+    required this.onTap,
+    required this.onPressedLogout,
   });
 
-  final void Function()? onPressed;
+  final void Function()? onTap;
+  final void Function()? onPressedLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SpeedDialMenu extends StatelessWidget {
           label: 'Update Details',
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
-          onTap: onPressed,
+          onTap: onTap,
         ),
         SpeedDialChild(
           child: Icon(Icons.logout),
@@ -50,24 +50,13 @@ class SpeedDialMenu extends StatelessWidget {
               title: 'Logout',
               content: const Text('Are you sure you want to logout?'),
               actions: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        supabase.auth.signOut();
-                        if (context.mounted) {
-                          context.showSnackBar('Logout succesful!');
-                        }
-                      },
-                      child: const Text('Logout'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('Cancel'),
-                    ),
-                  ],
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: onPressedLogout, 
+                  child: const Text('Logout'),
                 ),
               ],
             ).dialogueBuilder(context);

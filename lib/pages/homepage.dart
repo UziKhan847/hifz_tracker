@@ -32,6 +32,16 @@ class _HomepageState extends ConsumerState<Homepage> {
   late final userId = user.userId;
   late final data = user.getData();
   bool _isLoading = false;
+  String? isoCode;
+  String? dialCode;
+  String? phoneNumber;
+  Parent parentData = Parent(
+      students: [],
+      id: '',
+      fullName: null,
+      phoneNumber: null,
+      isoCode: null,
+      dialCode: null);
 
   final formKey = GlobalKey<FormState>();
 
@@ -48,6 +58,24 @@ class _HomepageState extends ConsumerState<Homepage> {
     });
   }
 
+  InputDecoration setInputDecoration(String labelText) {
+    return InputDecoration(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFFA36F1A)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFF17588b)),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+      ),
+      labelText: labelText,
+    );
+  }
+
   String? get errorText {
     final text = parentNameController.value.text;
     if (text.isEmpty) {
@@ -60,11 +88,19 @@ class _HomepageState extends ConsumerState<Homepage> {
     try {
       await supabase.from('profiles').update({
         'full_name': parentNameController.text,
-        'phone_number': phoneNumberController.text
+        'iso_code': isoCode,
+        'dial_code': dialCode,
+        'phone_number': phoneNumber,
       }).eq(
         'id',
         userId,
       );
+
+      setState(() {
+        parentData.fullName = parentNameController.text;
+        parentData.isoCode = isoCode;
+        parentData.phoneNumber = phoneNumber;
+      });
 
       if (mounted) {
         context.showSnackBar("Details Updated!");
@@ -93,21 +129,22 @@ class _HomepageState extends ConsumerState<Homepage> {
           children: [
             TextFormField(
               controller: parentNameController,
-              decoration: InputDecoration(
-                labelText: "Full Name",
-              ),
+              decoration: setInputDecoration('Full Name'),
               validator: (name) => name!.isEmpty ? "Name can't be empty" : null,
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
             Margins.vertical10,
             IntlPhoneField(
               controller: phoneNumberController,
-              decoration: InputDecoration(
-                labelText:
-                    'Phone Number', // https://pub.dev/packages/country_code_picker
-              ),
-              initialCountryCode: 'CA',
-              onChanged: (phone) {},
+              decoration: setInputDecoration('Phone Number'),
+              initialCountryCode: parentData.isoCode ?? 'CA',
+              onChanged: (phone) {
+                if (phone.isValidNumber()) {
+                  isoCode = phone.countryISOCode;
+                  dialCode = phone.countryCode;
+                  phoneNumber = phone.number;
+                }
+              },
               validator: (phone) => phone?.number.isEmpty == true
                   ? "Phone Number can't be empty"
                   : null,
@@ -145,10 +182,19 @@ class _HomepageState extends ConsumerState<Homepage> {
               if (snapshot.hasError) {
                 return Text('Oops, something went wrong, please try again.');
               } else if (snapshot.hasData) {
-                Parent parentData = Parent.fromJson(snapshot.data![0]);
+                if (parentData.id.isEmpty) {
+                  parentData = Parent.fromJson(snapshot.data![0]);
+                }
 
                 if (user.students.isEmpty) {
                   user.students = parentData.students;
+                }
+
+                if (parentNameController.text == '') {
+                  parentNameController.text = parentData.fullName ?? '';
+                }
+                if (phoneNumberController.text == '') {
+                  phoneNumberController.text = parentData.phoneNumber ?? '';
                 }
 
                 SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -197,35 +243,52 @@ class _HomepageState extends ConsumerState<Homepage> {
             }),
       ),
       floatingActionButton: SpeedDialMenu(
-        onPressed: () async {
+        onTap: () async {
           DialogMenu(
-            barrierDismissible: true,
+            barrierDismissible: false,
             title: 'Please Enter Your Details',
             content: updateDialogContent(),
             actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        updateDetails();
-                      }
-                    },
-                    child: const Text('Update'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (context.mounted) {
-                        Navigator.pop(context, 'Cancel');
-                      }
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                ],
+              ElevatedButton(
+                onPressed: () {
+                  if (context.mounted) {
+                    Navigator.pop(context, 'Cancel');
+                  }
+
+                  parentData.fullName != null
+                      ? parentNameController.text = "${parentData.fullName}"
+                      : parentNameController.clear();
+                  parentData.phoneNumber != null
+                      ? phoneNumberController.text = "${parentData.phoneNumber}"
+                      : phoneNumberController.clear();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    updateDetails();
+                  }
+                },
+                child: const Text('Update'),
               ),
             ],
           ).dialogueBuilder(context);
+        },
+        onPressedLogout: () {
+          Navigator.popUntil(context, (route) => route.isFirst);
+          supabase.auth.signOut();
+          parentData = Parent(
+              students: [],
+              id: '',
+              fullName: null,
+              phoneNumber: null,
+              isoCode: null,
+              dialCode: null);
+          user.students = [];
+          if (context.mounted) {
+            context.showSnackBar('Logout succesful!');
+          }
         },
       ),
     );
