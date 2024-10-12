@@ -22,7 +22,6 @@ class HomeworkTile extends StatefulWidget {
 }
 
 class _HomeworkTileState extends State<HomeworkTile> {
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -92,28 +91,23 @@ class _HomeworkTileState extends State<HomeworkTile> {
                         : Text('Completed'),
                     padding: EdgeInsets.symmetric(horizontal: 0),
                     value: widget.isSelected,
-                    onChanged: (bool newValue) {
+                    onChanged: (_) {
                       if (widget.isSelected == false) {
                         DialogMenu(
                           title: 'Do you want to mark as completed?',
                           content: Text('Warning, this cannot be undone!'),
                           actions: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: widget.onPressed,
-                                  child: const Text('Yes'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (context.mounted) {
-                                      Navigator.pop(context, 'Cancel');
-                                    }
-                                  },
-                                  child: const Text('No'),
-                                ),
-                              ],
+                            ElevatedButton(
+                              onPressed: () {
+                                if (context.mounted) {
+                                  Navigator.pop(context, 'Cancel');
+                                }
+                              },
+                              child: const Text('No'),
+                            ),
+                            ElevatedButton(
+                              onPressed: widget.onPressed,
+                              child: const Text('Yes'),
                             ),
                           ],
                         ).dialogueBuilder(context);

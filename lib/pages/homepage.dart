@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
 import 'package:markaz_umaza_hifz_tracker/main.dart';
-import 'package:markaz_umaza_hifz_tracker/models/homework/homework_data.dart';
+import 'package:markaz_umaza_hifz_tracker/providers/homework_data.dart';
 import 'package:markaz_umaza_hifz_tracker/models/parent.dart';
-import 'package:markaz_umaza_hifz_tracker/models/user_data.dart';
+import 'package:markaz_umaza_hifz_tracker/providers/user_data.dart';
 import 'package:markaz_umaza_hifz_tracker/utils/margins.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/home_app_bar.dart';
@@ -115,6 +115,21 @@ class _HomepageState extends ConsumerState<Homepage> {
           'Unexpected error occurred',
           isError: true,
         );
+      }
+    }
+  }
+
+  Future<void> logOut() async {
+    try {
+      Navigator.popUntil(context, (route) => route.isFirst);
+      supabase.auth.signOut();
+      user.students.clear();
+      if (mounted) {
+        context.showSnackBar('Logout succesful!');
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar('Logout unsuccesful!', isError: true);
       }
     }
   }
@@ -280,12 +295,7 @@ class _HomepageState extends ConsumerState<Homepage> {
           ).dialogueBuilder(context);
         },
         onPressedLogout: () async {
-          Navigator.popUntil(context, (route) => route.isFirst);
-          user.students = [];
-          supabase.auth.signOut();
-          if (context.mounted) {
-            context.showSnackBar('Logout succesful!');
-          }
+          await logOut();
         },
       ),
     );

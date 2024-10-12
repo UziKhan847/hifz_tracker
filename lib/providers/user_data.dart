@@ -10,9 +10,7 @@ final userData = ChangeNotifierProvider<UserData>((ref) {
 });
 
 class UserData extends ChangeNotifier {
-  UserData();
-
-  final String userId = supabase.auth.currentUser!.id;
+  String get userId => supabase.auth.currentUser!.id;
 
   List<Student> students = [];
 
@@ -26,13 +24,14 @@ class UserData extends ChangeNotifier {
 
   void addStudent(int id, String fullName, int age, String origin,
       {bool hafiz = false}) async {
+    final uid = userId;
     await supabase.from('students').insert({
       'id': id,
       'full_name': fullName,
       'age': age,
       'origin': origin,
       'hafiz': hafiz,
-      'parent_id': userId,
+      'parent_id': uid,
     });
 
     students.add(Student(
@@ -41,7 +40,7 @@ class UserData extends ChangeNotifier {
         age: age,
         origin: origin,
         hafiz: hafiz,
-        parentId: userId));
+        parentId: uid));
 
     notifyListeners();
   }

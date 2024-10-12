@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
 import 'package:markaz_umaza_hifz_tracker/main.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework.dart';
-import 'package:markaz_umaza_hifz_tracker/models/homework/homework_data.dart';
+import 'package:markaz_umaza_hifz_tracker/providers/homework_data.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework_tile.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/home_app_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

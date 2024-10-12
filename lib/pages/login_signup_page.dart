@@ -41,7 +41,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   Future<void> _login() async {
     try {
-      loadCircle();
+      //  loadCircle();
       await supabase.auth.signInWithPassword(
         email: _emailController.text,
         password: _passwordController.text,
@@ -64,11 +64,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           isError: true,
         );
       }
-    } finally {
-      if (mounted) {
-        loadCircle();
-      }
     }
+    //  finally {
+    //   if (mounted) {
+    //     loadCircle();
+    //   }
+    // }
   }
 
   Future<void> _signUp() async {
@@ -193,7 +194,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                             buttonText: 'Sign In',
                             onButtonTap: () async {
                               FocusScope.of(context).unfocus();
-                              _login();
+                              loadCircle();
+                              await _login();
+                              loadCircle();
                             },
                             memberQuestionText: "Not a member yet? ",
                             pageChangeText: "Register here",
