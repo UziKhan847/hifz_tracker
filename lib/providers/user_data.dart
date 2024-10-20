@@ -21,27 +21,4 @@ class UserData extends ChangeNotifier {
       .select('*, students(*)')
       .eq('id', userId)
       .order('id', referencedTable: 'students', ascending: true);
-
-  void addStudent(int id, String fullName, int age, String origin,
-      {bool hafiz = false}) async {
-    final uid = userId;
-    await supabase.from('students').insert({
-      'id': id,
-      'full_name': fullName,
-      'age': age,
-      'origin': origin,
-      'hafiz': hafiz,
-      'parent_id': uid,
-    });
-
-    students.add(Student(
-        id: id,
-        fullName: fullName,
-        age: age,
-        origin: origin,
-        hafiz: hafiz,
-        parentId: uid));
-
-    notifyListeners();
-  }
 }

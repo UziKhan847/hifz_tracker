@@ -8,7 +8,6 @@ import 'package:markaz_umaza_hifz_tracker/providers/homework_data.dart';
 import 'package:markaz_umaza_hifz_tracker/models/parent.dart';
 import 'package:markaz_umaza_hifz_tracker/providers/user_data.dart';
 import 'package:markaz_umaza_hifz_tracker/utils/margins.dart';
-import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/home_app_bar.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/speed_dial_menu.dart';
 import 'package:markaz_umaza_hifz_tracker/models/student/student_tile.dart';
@@ -219,7 +218,8 @@ class _HomepageState extends ConsumerState<Homepage> {
                 SchedulerBinding.instance.addPostFrameCallback((_) {
                   if (parentData.fullName == null ||
                       parentData.phoneNumber == null) {
-                    DialogMenu(
+                    context.dialog(
+                      context: context,
                       barrierDismissible: false,
                       title: 'Please Enter Your Details',
                       content: updateDialogContent(),
@@ -235,7 +235,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                           ),
                         ),
                       ],
-                    ).dialogueBuilder(context);
+                    );
                   }
                 });
 
@@ -262,37 +262,37 @@ class _HomepageState extends ConsumerState<Homepage> {
             }),
       ),
       floatingActionButton: SpeedDialMenu(
-        onTap: () async {
-          DialogMenu(
-            barrierDismissible: false,
-            title: 'Please Enter Your Details',
-            content: updateDialogContent(),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  if (context.mounted) {
-                    Navigator.pop(context, 'Cancel');
-                  }
+        onTap: () {
+          context.dialog(
+              title: 'Please Enter Your Details',
+              context: context,
+              content: updateDialogContent(),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    if (context.mounted) {
+                      Navigator.pop(context, 'Cancel');
+                    }
 
-                  parentData.fullName != null
-                      ? parentNameController.text = "${parentData.fullName}"
-                      : parentNameController.clear();
-                  parentData.phoneNumber != null
-                      ? phoneNumberController.text = "${parentData.phoneNumber}"
-                      : phoneNumberController.clear();
-                },
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    updateDetails();
-                  }
-                },
-                child: const Text('Update'),
-              ),
-            ],
-          ).dialogueBuilder(context);
+                    parentData.fullName != null
+                        ? parentNameController.text = "${parentData.fullName}"
+                        : parentNameController.clear();
+                    parentData.phoneNumber != null
+                        ? phoneNumberController.text =
+                            "${parentData.phoneNumber}"
+                        : phoneNumberController.clear();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      updateDetails();
+                    }
+                  },
+                  child: const Text('Update'),
+                ),
+              ]);
         },
         onPressedLogout: () async {
           await logOut();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
 import 'package:markaz_umaza_hifz_tracker/models/homework/homework.dart';
 import 'package:markaz_umaza_hifz_tracker/utils/margins.dart';
-import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
 import 'package:markaz_umaza_hifz_tracker/widgets/labeled_checkbox.dart';
 
 class HomeworkTile extends StatefulWidget {
@@ -93,7 +93,8 @@ class _HomeworkTileState extends State<HomeworkTile> {
                     value: widget.isSelected,
                     onChanged: (_) {
                       if (widget.isSelected == false) {
-                        DialogMenu(
+                        context.dialog(
+                          context: context,
                           title: 'Do you want to mark as completed?',
                           content: Text('Warning, this cannot be undone!'),
                           actions: <Widget>[
@@ -110,7 +111,7 @@ class _HomeworkTileState extends State<HomeworkTile> {
                               child: const Text('Yes'),
                             ),
                           ],
-                        ).dialogueBuilder(context);
+                        );
                       }
                     },
                   ),

@@ -10,4 +10,24 @@ extension ContextExtension on BuildContext {
           duration: Duration(milliseconds: 2500),
         ),
       );
+
+  void dialog(
+          {bool barrierDismissible = true,
+          required String title,
+          Widget? content,
+          List<Widget>? actions,
+          required BuildContext context}) =>
+      showDialog<void>(
+          barrierDismissible: barrierDismissible,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                title,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              content: content,
+              actions: actions,
+            );
+          });
 }

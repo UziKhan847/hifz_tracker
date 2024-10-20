@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:markaz_umaza_hifz_tracker/widgets/dialog/dialog.dart';
+import 'package:markaz_umaza_hifz_tracker/extensions/context_extensions.dart';
 
 class SpeedDialMenu extends StatelessWidget {
   const SpeedDialMenu({
@@ -46,7 +46,8 @@ class SpeedDialMenu extends StatelessWidget {
           labelStyle: TextStyle(fontSize: 15.0),
           shape: CircleBorder(),
           onTap: () {
-            DialogMenu(
+            context.dialog(
+              context: context,
               title: 'Logout',
               content: const Text('Are you sure you want to logout?'),
               actions: <Widget>[
@@ -55,11 +56,11 @@ class SpeedDialMenu extends StatelessWidget {
                   child: const Text('Cancel'),
                 ),
                 ElevatedButton(
-                  onPressed: onPressedLogout, 
+                  onPressed: onPressedLogout,
                   child: const Text('Logout'),
                 ),
               ],
-            ).dialogueBuilder(context);
+            );
           },
         )
       ],
