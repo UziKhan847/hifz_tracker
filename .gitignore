@@ -46,3 +46,4 @@ app.*.map.json
 /lib/models/homework/homework.g.dart
 /lib/widgets/dialogue_backup.dart
 /lib/widgets/speed_dial_backup.dart
+/lib/keys.dart

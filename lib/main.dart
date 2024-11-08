@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:markaz_umaza_hifz_tracker/keys.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/homepage.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/homework_page.dart';
 import 'package:markaz_umaza_hifz_tracker/pages/login_signup_page.dart';
@@ -13,9 +14,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://psukymsclupwiondluqp.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzdWt5bXNjbHVwd2lvbmRsdXFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcxMDY4MzQsImV4cCI6MjA0MjY4MjgzNH0.pUfR4Ls2ydYviL5HWnfz5ESe9tASqjFK9rrYY0OHELw',
+    url: supabaseUrlKey,
+    anonKey: supabaseAnonKey,
   );
 
   runApp(const ProviderScope(
